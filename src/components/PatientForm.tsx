@@ -2,18 +2,62 @@ import Error from "./Error"
 import { useForm} from "react-hook-form"
 import type { DraftPatient } from "../types"
 import { usePatientStore } from "../store"
+import { useEffect } from "react"
+import { Slide, toast } from "react-toastify"
 
 
 const PatientForm = () => {
 
-    const {addPatient} = usePatientStore()
+    const {addPatient, activeId, patients, updatePatient} = usePatientStore()
 
-    const {register, handleSubmit, formState:{errors}, reset}=useForm<DraftPatient>()
+    const {register, handleSubmit, setValue, formState:{errors}, reset}=useForm<DraftPatient>()
+    
+    
+    useEffect(()=>{
+        if(activeId){
+            const activePatient = patients.filter(patient => patient.id === activeId)[0]
+            const{name, caretaker, email, date, symptoms}=activePatient 
+            setValue('name',name)
+            setValue('caretaker', caretaker)
+            setValue('email', email)
+            setValue('date', date)
+            setValue('symptoms', symptoms)
+        }
+            
+    },[activeId])
+
 
     const registerPatient =(data:DraftPatient)=> {
-        addPatient(data)
+        if(activeId){
+            updatePatient(data)
+            toast.success('Patient Updated Correctly',{
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+            })
+        }else{
+            addPatient(data)
+            toast.success('Patient Saved Correctly',{
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+            })
+        }
         reset()
     }
+
 
 
   return (
@@ -126,7 +170,7 @@ const PatientForm = () => {
             <input
                 type="submit"
                 className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-                value='Guardar Paciente'
+                value='Save Patient Info'
             />
         </form> 
     </div>

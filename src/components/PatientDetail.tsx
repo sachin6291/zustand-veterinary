@@ -1,7 +1,7 @@
 import { usePatientStore } from "../store"
 import { Patient } from "../types"
 import PatientDetailItem from "./PatientDetailItem"
-
+import { Slide, toast } from "react-toastify"
 
 type PatientDetailProp={
     patient: Patient
@@ -10,7 +10,23 @@ const PatientDetail = ({patient} : PatientDetailProp) => {
 
     const{id ,name, caretaker, email, date, symptoms}=patient
     
-    const deletePatient = usePatientStore((state)=>state.deletePatient)
+    const {deletePatient, getPatientById} = usePatientStore()
+
+    const handleDelete =()=>{
+        
+        deletePatient(id)
+        toast.error('Patient Deleted Sucessfully', {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+        })
+    }
   
   
     return (
@@ -40,10 +56,11 @@ const PatientDetail = ({patient} : PatientDetailProp) => {
             data={symptoms}
         />
 
-        <div className=" flex justify-between gap-3 mt-10">
+        <div className=" flex flex-col md:flex-row justify-between gap-3 mt-10">
             <button 
                 type="button"
                 className=" py-2 px-7 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold uppercase rounded-md"
+                onClick={()=>getPatientById(id)}
             >
                 Edit
             </button>
@@ -51,7 +68,7 @@ const PatientDetail = ({patient} : PatientDetailProp) => {
             <button 
                 type="button"
                 className=" py-2 px-7 bg-red-600 hover:bg-red-700 text-white font-semibold uppercase rounded-md"
-                onClick={()=>deletePatient(id)}
+                onClick={handleDelete}
             >
                 Delete
             </button>
