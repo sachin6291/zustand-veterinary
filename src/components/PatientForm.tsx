@@ -8,11 +8,11 @@ const PatientForm = () => {
 
     const {addPatient} = usePatientStore()
 
-    const {register, handleSubmit, formState:{errors}}=useForm<DraftPatient>()
+    const {register, handleSubmit, formState:{errors}, reset}=useForm<DraftPatient>()
 
     const registerPatient =(data:DraftPatient)=> {
         addPatient(data)
-        
+        reset()
     }
 
 
